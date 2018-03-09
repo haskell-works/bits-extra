@@ -47,3 +47,28 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - bits-extra
+    - hspec
+    - hedgehog
+
+benchmarks:
+  bench:
+    main: Main.hs
+    source-dirs: bench
+    dependencies:
+    - base >=4 && <5
+    - bits-extra
+    - criterion
+    - hw-bits
+    - hw-prim >=0.4.0.0
+    - vector
+    when:
+    - condition: flag(sse42)
+      then:
+        ghc-options:
+        - -Wall
+        - -O2
+        - -msse4.2
+      else:
+        ghc-options:
+        - -Wall
+        - -O2
