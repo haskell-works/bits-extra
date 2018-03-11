@@ -25,6 +25,11 @@ dependencies:
 
 library:
   source-dirs: src
+  ghc-options:
+  - -Wall
+  - -O2
+  - -mbmi2
+  - -msse4.2
 
 tests:
   bits-extra-test:
@@ -34,10 +39,14 @@ tests:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
+    - -mbmi2
+    - -msse4.2
     dependencies:
     - bits-extra
     - hspec
     - hedgehog
+    - hw-hedgehog
+    - hw-hspec-hedgehog
 
 benchmarks:
   bench:
@@ -48,18 +57,9 @@ benchmarks:
     - bits-extra
     - criterion
     - hw-bits
-    - hw-prim >=0.4.0.0
     - vector
-    when:
-    - condition: flag(sse42)
-      then:
-        ghc-options:
-        - -Wall
-        - -O2
-        - -msse4.2
-      else:
-        ghc-options:
-        - -Wall
-        - -O2
-
-
+    ghc-options:
+    - -Wall
+    - -O2
+    - -msse4.2
+    - -mbmi2
