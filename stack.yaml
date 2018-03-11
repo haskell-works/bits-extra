@@ -25,7 +25,7 @@ setup-info:
         url: https://downloads.haskell.org/~ghc/8.4.1/ghc-8.4.1-x86_64-deb8-linux.tar.xz
         sha256: 427c77a934b30c3f1de992c38c072afb4323fe6fb30dbac919ca8cb6ae98fbd9
 
-resolver: nightly-2018-03-07
+resolver: nightly-2018-03-10
 compiler: ghc-8.4.1
 compiler-check: match-exact
 
