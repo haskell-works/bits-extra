@@ -1,6 +1,7 @@
 module Main where
 
-import Lib
+import Data.Bits.Pdep
+import Data.Bits.Pext
 
 main :: IO ()
 main = someFunc
