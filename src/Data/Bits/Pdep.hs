@@ -5,6 +5,8 @@ module Data.Bits.Pdep where
 import GHC.Prim
 import GHC.Word
 
+-- | Bitwise parallel deposit.  Deposits bits from the source at the locations
+-- described by the mask.
 class Pdep a where
   pdep :: a -> a -> a
 

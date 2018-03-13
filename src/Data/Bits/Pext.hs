@@ -5,6 +5,8 @@ module Data.Bits.Pext where
 import GHC.Prim
 import GHC.Word
 
+-- | Bitwise parallel extract.  Extract bits from the source at the locations
+-- described by the mask.
 class Pext a where
   pext :: a -> a -> a
 
