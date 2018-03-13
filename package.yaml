@@ -1,26 +1,16 @@
-name:                bits-extra
-version:             0.0.0.1
-github:              "githubuser/bits-extra"
-license:             BSD3
-author:              "John Ky"
-maintainer:          "newhoggy@gmail.com"
-copyright:           "2018 John Ky"
-
+name: bits-extra
+version: '0.0.0.1'
+description: Please see the README on Github at <https://github.com/haskell-works/bits-extra#readme>
+author: John Ky
+maintainer: newhoggy@gmail.com
+copyright: 2018 John Ky
+license: BSD3
+github: haskell-works/bits-extra
 extra-source-files:
-- README.md
 - ChangeLog.md
-
-# Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
-
-# To avoid duplicated efforts in documentation and dealing with the
-# complications of embedding Haddock markup inside cabal files, it is
-# common to point users to the README.md file.
-description:         Please see the README on Github at <https://github.com/githubuser/bits-extra#readme>
+- README.md
 
 dependencies:
-- base >= 4.11 && < 5
 - ghc-prim
 
 library:
@@ -28,38 +18,62 @@ library:
   ghc-options:
   - -Wall
   - -O2
-  - -mbmi2
-  - -msse4.2
+  exposed-modules:
+  - Data.Bits.Pdep
+  - Data.Bits.Pdep.Slow
+  - Data.Bits.Pext
+  - Data.Bits.Pext.Slow
+  dependencies:
+  - base >=4.11 && <5
+  when:
+  - condition: (flag(bmi2)) && (impl(ghc >=8.4.1))
+    ghc-options:
+    - -mbmi2
+    - -msse4.2
+    cpp-options:
+    - -DBMI2_ENABLED
 
 tests:
   bits-extra-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main: Spec.hs
+    source-dirs: test
     ghc-options:
     - -threaded
     - -rtsopts
     - -with-rtsopts=-N
-    - -mbmi2
-    - -msse4.2
     dependencies:
+    - base >=4.11 && <5
     - bits-extra
-    - hspec
     - hedgehog
+    - hspec
     - hw-hedgehog
     - hw-hspec-hedgehog
-
+    when:
+    - condition: (flag(bmi2)) && (impl(ghc >=8.4.1))
+      ghc-options:
+      - -mbmi2
+      - -msse4.2
 benchmarks:
   bench:
     main: Main.hs
     source-dirs: bench
+    ghc-options:
+    - -Wall
+    - -O2
     dependencies:
     - base >=4 && <5
     - bits-extra
     - criterion
     - hw-bits
     - vector
-    ghc-options:
-    - -Wall
-    - -O2
-    - -msse4.2
-    - -mbmi2
+    when:
+    - condition: (flag(bmi2)) && (impl(ghc >=8.4.1))
+      ghc-options:
+      - -mbmi2
+      - -msse4.2
+
+flags:
+  bmi2:
+    description: Enable bmi2 instruction set
+    manual: false
+    default: false

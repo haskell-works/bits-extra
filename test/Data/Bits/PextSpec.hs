@@ -2,6 +2,7 @@ module Data.Bits.PextSpec (spec) where
 
 import Data.Bits
 import Data.Bits.Pext
+import Data.Bits.Pext.Slow
 import Data.Int
 import Data.Word
 import HaskellWorks.Hspec.Hedgehog
@@ -14,40 +15,6 @@ import qualified Hedgehog.Range as R
 {-# ANN module ("HLint: ignore Redundant do"        :: String) #-}
 {-# ANN module ("HLint: ignore Reduce duplication"  :: String) #-}
 {-# ANN module ("HLint: redundant bracket"          :: String) #-}
-
-slowPext64 :: Word64 -> Word64 -> Word64
-slowPext64 = slowPext64' 0 0 0
-
-slowPext32 :: Word32 -> Word32 -> Word32
-slowPext32 s m = fromIntegral (slowPext64 (fromIntegral s) (fromIntegral m))
-
-slowPext64' :: Word64 -> Int -> Int -> Word64 -> Word64 -> Word64
-slowPext64' result offset index src mask = if index /= 64
-  then if maskBit /= 0
-          then slowPext64' nextResult (offset + 1) (index + 1) src mask
-          else slowPext64' result      offset      (index + 1) src mask
-  else result
-  where srcBit      = (src  `shiftR` index) .&. 1
-        maskBit     = (mask `shiftR` index) .&. 1
-        nextResult  = result .|. (srcBit `shiftL` offset)
-
-class SlowPext a where
-  slowPext :: a -> a -> a
-
-instance SlowPext Word where
-  slowPext s m = fromIntegral (slowPext64 (fromIntegral s) (fromIntegral m))
-
-instance SlowPext Word8 where
-  slowPext s m = fromIntegral (slowPext64 (fromIntegral s) (fromIntegral m))
-
-instance SlowPext Word16 where
-  slowPext s m = fromIntegral (slowPext64 (fromIntegral s) (fromIntegral m))
-
-instance SlowPext Word32 where
-  slowPext s m = fromIntegral (slowPext64 (fromIntegral s) (fromIntegral m))
-
-instance SlowPext Word64 where
-  slowPext s m = fromIntegral (slowPext64 (fromIntegral s) (fromIntegral m))
 
 spec :: Spec
 spec = describe "Data.Bits.PextSpec" $ do

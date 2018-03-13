@@ -74,4 +74,7 @@ benchAll :: [Benchmark]
 benchAll = benchPopCount <> benchPdep <> benchPext <> benchPlus
 
 main :: IO ()
-main = defaultMain benchAll
+main = do
+  putStrLn $ "Fast pdep enabled: " <> show fastPdepEnabled
+  putStrLn $ "Fast pext enabled: " <> show fastPextEnabled
+  defaultMain benchAll
