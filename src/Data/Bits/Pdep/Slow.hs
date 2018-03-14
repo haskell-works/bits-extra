@@ -19,6 +19,8 @@ slowPdep64' result src mask = if lowest /= 0
   where lowest    = (-mask) .&. mask
         newResult = (result .|. ((lsb src) .&. lowest))
 
+-- | Bitwise parallel deposit (emulated).  Deposits bits from the source at the
+-- locations described by the mask.
 class SlowPdep a where
   slowPdep :: a -> a -> a
 

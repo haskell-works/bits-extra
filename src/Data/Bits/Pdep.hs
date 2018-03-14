@@ -44,6 +44,8 @@ instance Pdep Word64 where
   {-# INLINE pdep #-}
 #endif
 
+-- | Runtime flag indicating whether the 'pdep' function is using the high-performance.
+-- BMI2 instruction set.  A value of `False` indicates that `pdep` is emulated.
 fastPdepEnabled :: Bool
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
 fastPdepEnabled = True

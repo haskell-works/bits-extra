@@ -44,6 +44,8 @@ instance Pext Word64 where
   {-# INLINE pext #-}
 #endif
 
+-- | Runtime flag indicating whether the 'pext' function is using the high-performance.
+-- BMI2 instruction set.  A value of `False` indicates that `pext` is emulated.
 fastPextEnabled :: Bool
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
 fastPextEnabled = True

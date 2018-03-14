@@ -18,6 +18,8 @@ slowPext64' result offset index src mask = if index /= 64
         maskBit     = (mask `shiftR` index) .&. 1
         nextResult  = result .|. (srcBit `shiftL` offset)
 
+-- | Bitwise parallel extract (emulated).  Extract bits from the source at
+-- the locations described by the mask.
 class SlowPext a where
   slowPext :: a -> a -> a
 
