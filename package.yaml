@@ -64,7 +64,6 @@ benchmarks:
     - base >=4 && <5
     - bits-extra
     - criterion
-    - hw-bits
     - vector
     when:
     - condition: (flag(bmi2)) && (impl(ghc >=8.4.1))
