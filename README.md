@@ -17,6 +17,8 @@ In the case where the target CPU architectures do not support these
 instruction set, a very slow emulated version of these operations is
 provided instead.
 
+Note `ghc-8.4.1` is required to target the BMI2 CPU instructions.
+
 ## Compilation
 
 It is sufficient to build, test and benchmark the library as follows
@@ -255,3 +257,12 @@ Benchmark bench: FINISH
 ## Reference
 
 * [Bit Manipulation Instruction Sets (Wikipedia)](https://en.wikipedia.org/wiki/Bit_Manipulation_Instruction_Sets)
+* [GHC differential D4236](https://phabricator.haskell.org/D4236)
+
+## Acknowledgement
+
+A lot of people helped in the writing of this library and the underlying GHC patch:
+* Ben Gamari
+* Moritz Angermann
+* Alex Mason
+* Moritz Kiefer

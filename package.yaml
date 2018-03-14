@@ -24,7 +24,7 @@ library:
   - Data.Bits.Pext
   - Data.Bits.Pext.Slow
   dependencies:
-  - base >=4.11 && <5
+  - base >=4.7 && <5
   when:
   - condition: (flag(bmi2)) && (impl(ghc >=8.4.1))
     ghc-options:
