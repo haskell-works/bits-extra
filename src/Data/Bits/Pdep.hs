@@ -6,8 +6,9 @@ module Data.Bits.Pdep
   , fastPdepEnabled
   ) where
 
-import GHC.Prim
 import GHC.Word
+
+import qualified Data.Bits.Pdep.Prim as P
 
 -- | Bitwise parallel deposit.  Deposits bits from the source at the locations
 -- described by the mask.
@@ -15,40 +16,27 @@ class Pdep a where
   pdep :: a -> a -> a
 
 instance Pdep Word where
-  pdep (W#   src#) (W#   mask#) = W#   (pdep#   src# mask#)
+  pdep = P.primPdep
   {-# INLINE pdep #-}
 
 instance Pdep Word8 where
-  pdep src mask = fromIntegral (pdep (fromIntegral src) (fromIntegral mask) :: Word32)
+  pdep = P.primPdep8
   {-# INLINE pdep #-}
 
 instance Pdep Word16 where
-  pdep src mask = fromIntegral (pdep (fromIntegral src) (fromIntegral mask) :: Word32)
+  pdep = P.primPdep16
   {-# INLINE pdep #-}
 
-#if MIN_VERSION_base(4,11,0)
 instance Pdep Word32 where
-  pdep (W32# src#) (W32# mask#) = W32# (pdep32# src# mask#)
+  pdep = P.primPdep32
   {-# INLINE pdep #-}
 
 instance Pdep Word64 where
-  pdep (W64# src#) (W64# mask#) = W64# (pdep64# src# mask#)
+  pdep = P.primPdep64
   {-# INLINE pdep #-}
-#else
-instance Pdep Word32 where
-  pdep = slowPdep
-  {-# INLINE pdep #-}
-
-instance Pdep Word64 where
-  pdep = slowPdep
-  {-# INLINE pdep #-}
-#endif
 
 -- | Runtime flag indicating whether the 'pdep' function is using the high-performance.
 -- BMI2 instruction set.  A value of `False` indicates that `pdep` is emulated.
 fastPdepEnabled :: Bool
-#if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
-fastPdepEnabled = True
-#else
-fastPdepEnabled = False
-#endif
+fastPdepEnabled = P.fastPdepEnabled
+{-# INLINE fastPdepEnabled #-}

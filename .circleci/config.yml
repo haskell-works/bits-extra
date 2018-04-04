@@ -67,11 +67,15 @@ jobs:
 
       - run:
           name: Building dependencies
-          command: stack --stack-yaml stack-ci.yaml build --only-dependencies
+          command: |
+            stack --stack-yaml stack-ci.yaml                      build --only-dependencies
+            stack --stack-yaml stack-ci.yaml --resolver lts-10.10 build --only-dependencies
 
       - run:
           name: Compiling
-          command: stack --stack-yaml stack-ci.yaml build --test --no-run-tests
+          command: |
+            stack --stack-yaml stack-ci.yaml                      build --test --no-run-tests
+            stack --stack-yaml stack-ci.yaml --resolver lts-10.10 build --test --no-run-tests
 
       - save_cache:
           key: dot-stack-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
@@ -89,7 +93,9 @@ jobs:
       ##### Running tests
       - run:
           name: Running tests against latest on hackage
-          command: stack --stack-yaml stack-ci.yaml test
+          command: |
+            stack --stack-yaml stack-ci.yaml                      test
+            stack --stack-yaml stack-ci.yaml --resolver lts-10.10 test
 
       - deploy:
           command: |

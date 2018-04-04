@@ -262,6 +262,7 @@ Benchmark bench: FINISH
 ## Acknowledgement
 
 A lot of people helped in the writing of this library and the underlying GHC patch:
+
 * Ben Gamari
 * Moritz Angermann
 * Alex Mason
