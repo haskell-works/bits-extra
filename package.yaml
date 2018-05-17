@@ -25,6 +25,7 @@ library:
   - Data.Bits.Pext.Slow
   dependencies:
   - base >=4.7 && <5
+  - vector
   when:
   - condition: (flag(bmi2)) && (impl(ghc >=8.4.1))
     ghc-options:
@@ -53,6 +54,7 @@ tests:
       ghc-options:
       - -mbmi2
       - -msse4.2
+
 benchmarks:
   bench:
     main: Main.hs
