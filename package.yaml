@@ -19,6 +19,7 @@ library:
   - -Wall
   - -O2
   exposed-modules:
+  - Data.Bits.BitSize
   - Data.Bits.Pdep
   - Data.Bits.Pdep.Slow
   - Data.Bits.Pext
