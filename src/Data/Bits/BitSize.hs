@@ -1,3 +1,6 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications    #-}
+
 module Data.Bits.BitSize where
 
 import Data.Functor.Identity
@@ -74,6 +77,6 @@ instance BitSize a => BitSize (DV.Vector a) where
   bitSize = DV.foldl (\a b -> a + bitSize b) 0
   {-# INLINE bitSize #-}
 
-instance (BitSize a, DVS.Storable a) => BitSize (DVS.Vector a) where
-  bitSize = DVS.foldl (\a b -> a + bitSize b) 0
+instance forall a. (BitSize a, DVS.Storable a) => BitSize (DVS.Vector a) where
+  bitSize v = DVS.length v * bitSize @a undefined
   {-# INLINE bitSize #-}
