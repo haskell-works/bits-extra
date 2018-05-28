@@ -11,6 +11,7 @@ github: haskell-works/bits-extra
 extra-source-files:
 - ChangeLog.md
 - README.md
+tested-with: GHC == 8.4.2, GHC == 8.2.2, GHC == 8.0.2
 
 dependencies:
 - ghc-prim
@@ -48,7 +49,7 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - base >=4.11 && <5
+    - base >=4.9 && <5
     - bits-extra
     - hedgehog
     - hspec
