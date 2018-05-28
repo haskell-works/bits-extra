@@ -15,7 +15,6 @@ cabal.project.local
 *.prof
 *.aux
 *.hp
-*.cabal
 
 /*.submodules
 /.stack-work/
