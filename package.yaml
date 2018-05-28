@@ -28,7 +28,7 @@ library:
   - Data.Bits.Pext
   - Data.Bits.Pext.Slow
   dependencies:
-  - base >=4.7 && <5
+  - base >=4.9 && <5
   - vector
   other-extensions:
   - TypeApplications
@@ -72,7 +72,7 @@ benchmarks:
     - -Wall
     - -O2
     dependencies:
-    - base >=4 && <5
+    - base >=4.9 && <5
     - bits-extra
     - criterion
     - vector
