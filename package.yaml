@@ -1,10 +1,12 @@
 name: bits-extra
 version: '0.0.1.2'
+synopsis: Useful bitwise operations
 description: Please see the README on Github at <https://github.com/haskell-works/bits-extra#readme>
 author: John Ky
 maintainer: newhoggy@gmail.com
 copyright: 2018 John Ky
 license: BSD3
+category: Data, Serialization
 github: haskell-works/bits-extra
 extra-source-files:
 - ChangeLog.md
