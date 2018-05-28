@@ -54,6 +54,9 @@ tests:
     - hspec
     - hw-hedgehog
     - hw-hspec-hedgehog
+    verbatim:
+      build-tool-depends:
+        "hspec-discover:hspec-discover"
     when:
     - condition: (flag(bmi2)) && (impl(ghc >=8.4.1))
       ghc-options:
