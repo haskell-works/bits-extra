@@ -4,6 +4,7 @@ import Criterion.Main
 import Data.Bits
 import Data.Bits.Pdep
 import Data.Bits.Pext
+import Data.Monoid ((<>))
 import Data.Word
 
 import qualified Data.Vector.Storable as DVS

@@ -1,5 +1,7 @@
 # bits-extra
 
+[![Build Status](https://travis-ci.org/haskell-works/bits-extra.svg?branch=master)](https://travis-ci.org/haskell-works/bits-extra)
+
 Useful bitwise operations.
 
 This library exposes support for some BMI2 CPU instructions on some x86 based

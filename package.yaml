@@ -1,14 +1,17 @@
 name: bits-extra
 version: '0.0.1.2'
+synopsis: Useful bitwise operations
 description: Please see the README on Github at <https://github.com/haskell-works/bits-extra#readme>
 author: John Ky
 maintainer: newhoggy@gmail.com
 copyright: 2018 John Ky
 license: BSD3
+category: Data, Serialization
 github: haskell-works/bits-extra
 extra-source-files:
 - ChangeLog.md
 - README.md
+tested-with: GHC == 8.4.2, GHC == 8.2.2, GHC == 8.0.2
 
 dependencies:
 - ghc-prim
@@ -25,7 +28,7 @@ library:
   - Data.Bits.Pext
   - Data.Bits.Pext.Slow
   dependencies:
-  - base >=4.7 && <5
+  - base >=4.9 && <5
   - vector
   other-extensions:
   - TypeApplications
@@ -46,12 +49,15 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - base >=4.11 && <5
+    - base >=4.9 && <5
     - bits-extra
     - hedgehog
     - hspec
     - hw-hedgehog
     - hw-hspec-hedgehog
+    verbatim:
+      build-tool-depends:
+        "hspec-discover:hspec-discover"
     when:
     - condition: (flag(bmi2)) && (impl(ghc >=8.4.1))
       ghc-options:
@@ -66,7 +72,7 @@ benchmarks:
     - -Wall
     - -O2
     dependencies:
-    - base >=4 && <5
+    - base >=4.9 && <5
     - bits-extra
     - criterion
     - vector

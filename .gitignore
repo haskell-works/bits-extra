@@ -11,10 +11,10 @@ cabal-dev
 .hsenv
 .cabal-sandbox/
 cabal.sandbox.config
+cabal.project.local
 *.prof
 *.aux
 *.hp
-*.cabal
 
 /*.submodules
 /.stack-work/
