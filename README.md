@@ -1,6 +1,6 @@
 # bits-extra
-
-[![Build Status](https://travis-ci.org/haskell-works/bits-extra.svg?branch=master)](https://travis-ci.org/haskell-works/bits-extra)
+[![CircleCI](https://circleci.com/gh/haskell-works/bits-extra.svg?style=svg)](https://circleci.com/gh/haskell-works/bits-extra)
+[![Travis](https://travis-ci.org/haskell-works/bits-extra.svg?branch=master)](https://travis-ci.org/haskell-works/bits-extra)
 
 Useful bitwise operations.
 
