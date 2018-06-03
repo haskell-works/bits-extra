@@ -1,5 +1,4 @@
-{-# LANGUAGE CPP       #-}
-{-# LANGUAGE MagicHash #-}
+{-# LANGUAGE CPP #-}
 
 module Data.Bits.Pdep
   ( Pdep(..)

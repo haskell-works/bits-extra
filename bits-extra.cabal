@@ -1,8 +1,8 @@
--- This file has been generated from package.yaml by hpack version 0.27.0.
+-- This file has been generated from package.yaml by hpack version 0.28.2.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a709c58024f511acaffedc3c470150fe36fb985b8337c50cba59889139afdc68
+-- hash: 08f26f58e04bca879cea97bf05650e74982c165b0a8be56fa1376fbfef39bf40
 
 name:           bits-extra
 version:        0.0.1.2
@@ -19,7 +19,6 @@ license-file:   LICENSE
 build-type:     Simple
 cabal-version:  >= 1.10
 tested-with:    GHC == 8.4.2, GHC == 8.2.2, GHC == 8.0.2
-
 extra-source-files:
     ChangeLog.md
     README.md
