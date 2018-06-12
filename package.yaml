@@ -28,10 +28,8 @@ library:
   - Data.Bits.Pext
   - Data.Bits.Pext.Slow
   dependencies:
-  - base >=4.9 && <5
+  - base >=4.8 && <5
   - vector
-  other-extensions:
-  - TypeApplications
   when:
   - condition: (flag(bmi2)) && (impl(ghc >=8.4.1))
     ghc-options:
@@ -49,7 +47,7 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:
-    - base >=4.9 && <5
+    - base >=4.8 && <5
     - bits-extra
     - hedgehog
     - hspec
@@ -72,7 +70,7 @@ benchmarks:
     - -Wall
     - -O2
     dependencies:
-    - base >=4.9 && <5
+    - base >=4.8 && <5
     - bits-extra
     - criterion
     - vector
