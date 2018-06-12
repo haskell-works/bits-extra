@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4506c12b8feb426e2ee2d060b02fe8352179c770805dc6e5dc84bef448bbc96d
+-- hash: aa9442f0adf46c2854ad5c2c8e87dd90e2306859a72b359e0f60f3f8a7f7335c
 
 name:           bits-extra
 version:        0.0.1.2
@@ -18,7 +18,7 @@ license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
 cabal-version:  >= 1.10
-tested-with:    GHC == 8.4.2, GHC == 8.2.2, GHC == 8.0.2
+tested-with:    GHC == 8.4.2, GHC == 8.2.2, GHC == 8.0.2, GHC == 7.10.3
 
 extra-source-files:
     ChangeLog.md
