@@ -1,8 +1,8 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
+-- This file has been generated from package.yaml by hpack version 0.27.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 08f26f58e04bca879cea97bf05650e74982c165b0a8be56fa1376fbfef39bf40
+-- hash: aa9442f0adf46c2854ad5c2c8e87dd90e2306859a72b359e0f60f3f8a7f7335c
 
 name:           bits-extra
 version:        0.0.1.2
@@ -18,7 +18,8 @@ license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
 cabal-version:  >= 1.10
-tested-with:    GHC == 8.4.2, GHC == 8.2.2, GHC == 8.0.2
+tested-with:    GHC == 8.4.2, GHC == 8.2.2, GHC == 8.0.2, GHC == 7.10.3
+
 extra-source-files:
     ChangeLog.md
     README.md
@@ -45,10 +46,9 @@ library
       Paths_bits_extra
   hs-source-dirs:
       src
-  other-extensions: TypeApplications
   ghc-options: -Wall -O2
   build-depends:
-      base >=4.9 && <5
+      base >=4.8 && <5
     , ghc-prim
     , vector
   if (flag(bmi2)) && (impl(ghc >=8.4.1))
@@ -67,7 +67,7 @@ test-suite bits-extra-test
       test
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.9 && <5
+      base >=4.8 && <5
     , bits-extra
     , ghc-prim
     , hedgehog
@@ -88,7 +88,7 @@ benchmark bench
       bench
   ghc-options: -Wall -O2
   build-depends:
-      base >=4.9 && <5
+      base >=4.8 && <5
     , bits-extra
     , criterion
     , ghc-prim

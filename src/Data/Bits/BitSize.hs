@@ -1,5 +1,4 @@
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeApplications    #-}
 
 module Data.Bits.BitSize where
 
@@ -78,5 +77,5 @@ instance BitSize a => BitSize (DV.Vector a) where
   {-# INLINE bitSize #-}
 
 instance forall a. (BitSize a, DVS.Storable a) => BitSize (DVS.Vector a) where
-  bitSize v = DVS.length v * bitSize @a undefined
+  bitSize v = DVS.length v * bitSize (undefined :: a)
   {-# INLINE bitSize #-}
