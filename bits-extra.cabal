@@ -2,10 +2,10 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: aa9442f0adf46c2854ad5c2c8e87dd90e2306859a72b359e0f60f3f8a7f7335c
+-- hash: 2b570cc02c2669976f9b6116039e2b03b4942f905bf19228b08ea28cae3edcca
 
 name:           bits-extra
-version:        0.0.1.2
+version:        0.0.1.3
 synopsis:       Useful bitwise operations
 description:    Please see the README on Github at <https://github.com/haskell-works/bits-extra#readme>
 category:       Data, Serialization
