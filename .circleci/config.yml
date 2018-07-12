@@ -1,101 +1,162 @@
+defaults: &defaults
+  working_directory: ~/project
+  docker:
+    - image: quay.io/haskell_works/stack-build-cabal:2018-01-29
+
+  steps:
+    - checkout
+
+    - run:
+        name: Remove Cabal file
+        command: rm -f *.cabal
+
+    - run:
+        name: Copying scripts
+        command: |
+          mkdir -p ~/.local/bin
+          cp ./scripts/* ~/.local/bin
+
+    - run:
+        name: Query resolver & ghc version
+        command: |
+          resolver "$(resolver $LTS)" > resolver.version
+          ghc-version $(cat resolver.version) >  ghc.version
+
+    - run:
+        name: Find all sub-projects
+        command: projects-summary > projects.summary
+
+    ##### Building library
+    - restore_cache:
+        keys:
+          - stack--nAz6PsL--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--{{ checksum "package.yaml" }}--{{ checksum "stack.yaml" }}
+          - stack--nAz6PsL--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--{{ checksum "package.yaml" }}
+          - stack--nAz6PsL--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--
+          - stack--nAz6PsL--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--X
+
+    - run:
+        name: Stack setup
+        command: stack setup --resolver ${LTS}
+
+    - save_cache:
+        key:    stack--nAz6PsL--{{ checksum "ghc.version" }}--X
+        paths:  [~/.stack, ~/project/.stack-work]
+
+    - run:
+        name: Building dependencies
+        command: |
+          stack build --resolver ${LTS} --dependencies-only
+          stack build --resolver ${LTS} --dependencies-only --test --no-run-tests
+
+    - save_cache:
+        key:    stack--nAz6PsL--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--{{ checksum "package.yaml" }}
+        paths:  [~/.stack, ~/project/.stack-work]
+
+    - run: stack build --resolver ${LTS} --test --no-run-tests
+
+    - save_cache:
+        key:    stack--nAz6PsL--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--{{ checksum "package.yaml" }}--{{ checksum "stack.yaml" }}
+        paths:  [~/.stack, ~/project/.stack-work]
+
+    ##### Running tests
+    - run:
+        name: Running tests against latest on hackage
+        command: stack test --resolver ${LTS}
+
+cabalbuild: &cabalbuild
+  working_directory: ~/project
+
+  steps:
+    - checkout
+
+    - run:
+        name: Add GHC tools to PATH
+        command: |
+          echo "HOME=$HOME"
+          echo "BASH_ENV=$BASH_ENV"
+          echo "PATH=$PATH"
+          echo 'export PATH="$PATH:/opt/ghc/bin/"' >> $BASH_ENV
+
+    - run:
+        name: Copying scripts
+        command: |
+          mkdir -p ~/.local/bin
+          cp ./scripts/* ~/.local/bin
+
+    - run:
+        name: GHC version
+        command: |
+          echo "$GHC" > ghc.version
+
+    - run:
+        name: Find all sub-projects
+        command: ./scripts/projects-summary > projects.summary
+
+    ##### Building library
+    - restore_cache:
+        keys:
+          - cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--extra
+          - cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--
+
+    - run:
+        name: Building build dependencies
+        command: |
+          ./scripts/mk-cabal-project > cabal.project
+          cabal update
+          cabal new-build --disable-tests --disable-benchmarks --project-file="cabal.project" --dep -j${CABAL_THREADS:-4} all
+          cabal new-build --enable-tests  --enable-benchmarks  --project-file="cabal.project" --dep -j${CABAL_THREADS:-4} all
+
+    - save_cache:
+        key:    cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--
+        paths:  [~/.cabal/packages, ~/.cabal/store]
+
+    - run:
+        name: Building project
+        command: |
+          cabal new-build --enable-tests --enable-benchmarks --project-file="cabal.project" -j${CABAL_THREADS:-4} all
+
+    - save_cache:
+        key:    cabal--{{ checksum "ghc.version" }}--{{ .Environment.CACHE_VERSION }}--{{ checksum "projects.summary" }}--extra
+        paths:  [~/.cabal/packages, ~/.cabal/store]
+
+    - run:
+        name: Running tests
+        command: |
+          cabal new-test --project-file="cabal.project" -j${CABAL_THREADS:-4} all
+
 version: 2.0
 jobs:
-  build:
-    working_directory: ~/project
+  ghc-8.4.3:
+    environment:
+      - GHC: "ghc8.4.3"
+    docker:
+      - image: quay.io/haskell_works/ghc-8.4.3
+    <<: *cabalbuild
+
+  ghc-8.2.2:
+    environment:
+      - GHC: "ghc8.2.2"
+    docker:
+      - image: quay.io/haskell_works/ghc-8.2.2
+    <<: *cabalbuild
+
+  lts-12:
+    environment:
+      - LTS: "lts-12"
+    <<: *defaults
+
+  release:
     docker:
       - image: quay.io/haskell_works/stack-build-cabal:2018-01-29
 
     steps:
       - checkout
 
-      ##### Copying scripts
       - run:
           name: Copying scripts
           command: |
             mkdir -p ~/.local/bin
             cp ./scripts/* ~/.local/bin
-
-      ##### Updating cabval package list
-      - run:
-          name: Updating cabal package list date stamp
-          command: date +%F > dot-cabal-cache-date
-
-      - restore_cache:
-          keys:
-            - dot-cabal-{{ checksum "dot-cabal-cache-date" }}
-            - dot-cabal
-
-      - run:
-          name: Updating cabal package list
-          command: cabal update
-
-      - save_cache:
-          key: dot-cabal-{{ checksum "dot-cabal-cache-date" }}
-          paths:
-            - ~/.cabal
-      - save_cache:
-          key: dot-cabal
-          paths:
-            - ~/.cabal
-
-      ##### Building library
-      - restore_cache:
-          keys:
-            - dot-stack-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
-            - dot-stack-{{ checksum "stack.yaml" }}-build
-            - dot-stack-{{ checksum "stack.yaml" }}-setup
-
-      ##### Fetching latest organisation package versions
-      - run:
-          name: Fetching latest organisation package versions
-          command: |
-            fetch
-            echo "== stack-ci.yaml =="
-            cat stack-ci.yaml
-
-      - restore_cache:
-          key: dot-stack-work-{{ checksum "stack.yaml" }}
-
-      - run:
-          name: Stack setup
-          command: stack setup
-
-      - save_cache:
-          key: dot-stack-{{ checksum "stack.yaml" }}-setup
-          paths:
-            - ~/.stack
-
-      - run:
-          name: Building dependencies
-          command: |
-            stack --stack-yaml stack-ci.yaml                      build --only-dependencies
-            stack --stack-yaml stack-ci.yaml --resolver lts-10.10 build --only-dependencies
-
-      - run:
-          name: Compiling
-          command: |
-            stack --stack-yaml stack-ci.yaml                      build --test --no-run-tests
-            stack --stack-yaml stack-ci.yaml --resolver lts-10.10 build --test --no-run-tests
-
-      - save_cache:
-          key: dot-stack-{{ checksum "stack.yaml" }}-{{ checksum "package.yaml" }}
-          paths:
-            - ~/.stack
-      - save_cache:
-          key: dot-stack-{{ checksum "stack.yaml" }}-build
-          paths:
-            - ~/.stack
-
-      - save_cache:
-          key: dot-stack-work-{{ checksum "stack.yaml" }}
-          paths: ~/project/.stack-work
-
-      ##### Running tests
-      - run:
-          name: Running tests against latest on hackage
-          command: |
-            stack --stack-yaml stack-ci.yaml                      test
-            stack --stack-yaml stack-ci.yaml --resolver lts-10.10 test
 
       - deploy:
           command: |
@@ -109,17 +170,14 @@ jobs:
 
 workflows:
   version: 2
-  un-tagged-build:
+  multiple-ghcs:
     jobs:
-      - build:
-          filters:
-            tags:
-              ignore: /^v.*/
-  tagged-build:
-    jobs:
-      - build:
+      - ghc-8.4.3
+      - ghc-8.2.2
+      - lts-12
+      - release:
+          requires:
+            - lts-12
           filters:
             branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+              only: master
