@@ -6,7 +6,7 @@ author: John Ky
 maintainer: newhoggy@gmail.com
 copyright: 2018 John Ky
 license: BSD3
-category: Data, Serialization
+category: Data, Bit
 github: haskell-works/bits-extra
 extra-source-files:
 - ChangeLog.md
