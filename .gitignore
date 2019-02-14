@@ -26,4 +26,3 @@ cabal.project.local
 /*.json.bp
 /snapshot.yaml
 /stack-ci.yaml
-/*.cabal
