@@ -10,7 +10,7 @@ maintainer:     newhoggy@gmail.com
 copyright:      2018 John Ky
 license:        BSD3
 license-file:   LICENSE
-tested-with:    GHC == 8.4.2, GHC == 8.2.2, GHC == 8.0.2, GHC == 7.10.3
+tested-with:    GHC == 8.4.2, GHC == 8.2.2, GHC == 7.10.3
 build-type:     Simple
 cabal-version:  >= 1.10
 extra-source-files:
