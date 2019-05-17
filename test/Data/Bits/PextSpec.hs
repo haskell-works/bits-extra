@@ -1,10 +1,7 @@
 module Data.Bits.PextSpec (spec) where
 
-import Data.Bits
 import Data.Bits.Pext
 import Data.Bits.Pext.Slow
-import Data.Int
-import Data.Word
 import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec

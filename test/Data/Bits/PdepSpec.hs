@@ -1,11 +1,8 @@
 
 module Data.Bits.PdepSpec (spec) where
 
-import Data.Bits
 import Data.Bits.Pdep
 import Data.Bits.Pdep.Slow
-import Data.Int
-import Data.Word
 import HaskellWorks.Hspec.Hedgehog
 import Hedgehog
 import Test.Hspec
