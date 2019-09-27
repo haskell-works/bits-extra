@@ -12,7 +12,7 @@ maintainer:         newhoggy@gmail.com
 copyright:          2018-2019 John Ky
 license:            BSD-3-Clause
 license-file:       LICENSE
-tested-with:        GHC == 8.6.5, GHC == 8.4.4, GHC == 8.2.2
+tested-with:        GHC == 8.8.1, GHC == 8.6.5, GHC == 8.4.4, GHC == 8.2.2
 build-type:         Simple
 extra-source-files:
     ChangeLog.md
@@ -27,15 +27,14 @@ flag bmi2
   manual: False
   default: False
 
-common base               { build-depends: base               >= 4.8      &&  < 5     }
-common bits-extra         { build-depends: bits-extra                                 }
-common criterion          { build-depends: criterion                                  }
-common ghc-prim           { build-depends: ghc-prim                                   }
-common hedgehog           { build-depends: hedgehog                                   }
-common hspec              { build-depends: hspec                                      }
-common hw-hedgehog        { build-depends: hw-hedgehog                                }
-common hw-hspec-hedgehog  { build-depends: hw-hspec-hedgehog                          }
-common vector             { build-depends: vector                                     }
+common base               { build-depends: base               >= 4.8        && < 5      }
+common criterion          { build-depends: criterion          >= 1.3        && < 1.6    }
+common ghc-prim           { build-depends: ghc-prim           >= 0.5        && < 0.6    }
+common hedgehog           { build-depends: hedgehog           >= 0.5.3      && < 1.1    }
+common hspec              { build-depends: hspec              >= 2.4        && < 2.8    }
+common hw-hedgehog        { build-depends: hw-hedgehog                                  }
+common hw-hspec-hedgehog  { build-depends: hw-hspec-hedgehog                            }
+common vector             { build-depends: vector                                       }
 
 common config
   default-language:   Haskell2010
