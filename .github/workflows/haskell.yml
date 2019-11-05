@@ -60,10 +60,10 @@ jobs:
           --archive-uri   http://hw-binary-cache-us-west-2-a.s3-website-us-west-2.amazonaws.com/archive
 
     - name: Install dependencies
-      run: cabal v2-build --enable-tests --enable-benchmarks --only-dependencies
+      run: cabal v2-build --enable-tests --enable-benchmarks --write-ghc-environment-files=always --only-dependencies
 
     - name: Build
-      run: cabal v2-build --enable-tests --enable-benchmarks
+      run: cabal v2-build --enable-tests --enable-benchmarks --write-ghc-environment-files=always
 
     - name: Run tests
-      run: cabal v2-test --enable-tests --enable-benchmarks
+      run: cabal v2-test --enable-tests --enable-benchmarks --write-ghc-environment-files=always
