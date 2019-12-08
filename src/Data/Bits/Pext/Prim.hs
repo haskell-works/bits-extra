@@ -41,9 +41,9 @@ primPext src mask = fromIntegral (primPext64 (fromIntegral src) (fromIntegral ma
 -- >>> primPext64 1 1
 -- 1
 primPext64
-  :: Word64 -- ^ the bitmap from which bits will be extracted
-  -> Word64 -- ^ the bitmap selecting the bits that are to be extracted
-  -> Word64 -- ^ the bitmap containing the extract bits with higher-order bits cleared
+  :: Word64 -- ^ word from which bits will be extracted
+  -> Word64 -- ^ bitmap selecting the bits that are to be extracted
+  -> Word64 -- ^ word containing the extracted bits
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
 primPext64 (W64# src#) (W64# mask#) = W64# (pext64# src# mask#)
 #else
@@ -59,9 +59,9 @@ primPext64 = slowPext
 -- >>> primPext32 1 1
 -- 1
 primPext32
-  :: Word32 -- ^ the bitmap from which bits will be extracted
-  -> Word32 -- ^ the bitmap selecting the bits that are to be extracted
-  -> Word32 -- ^ the bitmap containing the extract bits with higher-order bits cleared
+  :: Word32 -- ^ word from which bits will be extracted
+  -> Word32 -- ^ bitmap selecting the bits that are to be extracted
+  -> Word32 -- ^ word containing the extracted bits
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
 primPext32 (W32# src#) (W32# mask#) = W32# (pext32# src# mask#)
 #else
@@ -77,9 +77,9 @@ primPext32 = slowPext
 -- >>> primPext16 1 1
 -- 1
 primPext16
-  :: Word16 -- ^ the bitmap from which bits will be extracted
-  -> Word16 -- ^ the bitmap selecting the bits that are to be extracted
-  -> Word16 -- ^ the bitmap containing the extract bits with higher-order bits cleared
+  :: Word16 -- ^ word from which bits will be extracted
+  -> Word16 -- ^ bitmap selecting the bits that are to be extracted
+  -> Word16 -- ^ word containing the extracted bits
 primPext16 src mask = fromIntegral (primPext32 (fromIntegral src) (fromIntegral mask))
 {-# INLINE primPext16 #-}
 
@@ -91,9 +91,9 @@ primPext16 src mask = fromIntegral (primPext32 (fromIntegral src) (fromIntegral 
 -- >>> primPext8 1 1
 -- 1
 primPext8
-  :: Word8 -- ^ the bitmap from which bits will be extracted
-  -> Word8 -- ^ the bitmap selecting the bits that are to be extracted
-  -> Word8 -- ^ the bitmap containing the extract bits with higher-order bits cleared
+  :: Word8 -- ^ word from which bits will be extracted
+  -> Word8 -- ^ bitmap selecting the bits that are to be extracted
+  -> Word8 -- ^ word containing the extracted bits
 primPext8 src mask = fromIntegral (primPext32 (fromIntegral src) (fromIntegral mask))
 {-# INLINE primPext8 #-}
 
