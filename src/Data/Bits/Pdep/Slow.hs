@@ -1,3 +1,11 @@
+{-|
+Module      : Data.Bits.Pdep.Prim
+Description : Parallel deposit operations (emulated)
+Copyright   : (c) John Ky, 2018-2019
+License     : BSD-3-Clause
+Maintainer  : newhoggy@gmail.com
+Stability   : stable
+-}
 module Data.Bits.Pdep.Slow
   ( SlowPdep(..)
   ) where
@@ -6,6 +14,14 @@ import Data.Bits
 import GHC.Int
 import GHC.Word
 
+-- | Bitwise parallel deposit for 'Word64'.  Deposits bits from the source at the locations
+-- described by the mask.
+--
+-- Copies lower order bits from 'src' to 'mask' 1-bit locations in the return value;
+-- 'mask' 0-bit locations in the return value will be cleared.
+--
+-- >>> slowPdep64 1 1
+-- 1
 slowPdep64 :: Word64 -> Word64 -> Word64
 slowPdep64 = slowPdep64' 0
 

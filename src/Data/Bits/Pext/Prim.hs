@@ -1,6 +1,14 @@
 {-# LANGUAGE CPP       #-}
 {-# LANGUAGE MagicHash #-}
 
+{-|
+Module      : Data.Bits.Pext.Prim
+Description : Primop wrappers for the Parallel Extract operation
+Copyright   : (c) John Ky, 2018-2019
+License     : BSD-3-Clause
+Maintainer  : newhoggy@gmail.com
+Stability   : stable
+-}
 module Data.Bits.Pext.Prim
   ( primPext
   , primPext8
@@ -18,11 +26,24 @@ import GHC.Prim
 import Data.Bits.Pext.Slow
 #endif
 
-primPext :: Word -> Word -> Word
+primPext
+  :: Word
+  -> Word
+  -> Word
 primPext src mask = fromIntegral (primPext64 (fromIntegral src) (fromIntegral mask))
 {-# INLINE primPext #-}
 
-primPext64 :: Word64 -> Word64 -> Word64
+-- | Parallel extract bits for 'Word64'
+--
+-- Copies selected bits from 'src' to contiguous low-order bits of the return value;
+-- higher-order return value bits are cleared.
+--
+-- >>> primPext64 1 1
+-- 1
+primPext64
+  :: Word64 -- ^ the bitmap from which bits will be extracted
+  -> Word64 -- ^ the bitmap selecting the bits that are to be extracted
+  -> Word64 -- ^ the bitmap containing the extract bits with higher-order bits cleared
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
 primPext64 (W64# src#) (W64# mask#) = W64# (pext64# src# mask#)
 #else
@@ -30,7 +51,17 @@ primPext64 = slowPext
 #endif
 {-# INLINE primPext64 #-}
 
-primPext32 :: Word32 -> Word32 -> Word32
+-- | Parallel extract bits for 'Word32'
+--
+-- Copies selected bits from 'src' to contiguous low-order bits of the return value;
+-- higher-order return value bits are cleared.
+--
+-- >>> primPext32 1 1
+-- 1
+primPext32
+  :: Word32 -- ^ the bitmap from which bits will be extracted
+  -> Word32 -- ^ the bitmap selecting the bits that are to be extracted
+  -> Word32 -- ^ the bitmap containing the extract bits with higher-order bits cleared
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
 primPext32 (W32# src#) (W32# mask#) = W32# (pext32# src# mask#)
 #else
@@ -38,15 +69,35 @@ primPext32 = slowPext
 #endif
 {-# INLINE primPext32 #-}
 
-primPext16 :: Word16 -> Word16 -> Word16
+-- | Parallel extract bits for 'Word16'
+--
+-- Copies selected bits from 'src' to contiguous low-order bits of the return value;
+-- higher-order return value bits are cleared.
+--
+-- >>> primPext16 1 1
+-- 1
+primPext16
+  :: Word16 -- ^ the bitmap from which bits will be extracted
+  -> Word16 -- ^ the bitmap selecting the bits that are to be extracted
+  -> Word16 -- ^ the bitmap containing the extract bits with higher-order bits cleared
 primPext16 src mask = fromIntegral (primPext32 (fromIntegral src) (fromIntegral mask))
 {-# INLINE primPext16 #-}
 
-primPext8 :: Word8 -> Word8 -> Word8
+-- | Parallel extract bits for 'Word8'
+--
+-- Copies selected bits from 'src' to contiguous low-order bits of the return value;
+-- higher-order return value bits are cleared.
+--
+-- >>> primPext8 1 1
+-- 1
+primPext8
+  :: Word8 -- ^ the bitmap from which bits will be extracted
+  -> Word8 -- ^ the bitmap selecting the bits that are to be extracted
+  -> Word8 -- ^ the bitmap containing the extract bits with higher-order bits cleared
 primPext8 src mask = fromIntegral (primPext32 (fromIntegral src) (fromIntegral mask))
 {-# INLINE primPext8 #-}
 
--- | Runtime flag indicating whether the 'pext' function is using the high-performance.
+-- | Runtime flag indicating whether the 'pext' function is using the high-performance
 -- BMI2 instruction set.  A value of `False` indicates that `pext` is emulated.
 fastPextEnabled :: Bool
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
