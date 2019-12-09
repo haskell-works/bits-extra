@@ -34,7 +34,10 @@ import Data.Bits.Pdep.Slow
 --
 -- >>> primPdep 1 1
 -- 1
-primPdep :: Word -> Word -> Word
+primPdep
+  :: Word -- ^ word containing the bits that will be deposited
+  -> Word -- ^ bitmap selecting the bits that are to be deposited
+  -> Word -- ^ word containing the deposited bits
 primPdep src mask = fromIntegral (primPdep64 (fromIntegral src) (fromIntegral mask))
 {-# INLINE primPdep #-}
 
@@ -46,7 +49,10 @@ primPdep src mask = fromIntegral (primPdep64 (fromIntegral src) (fromIntegral ma
 --
 -- >>> primPdep64 1 1
 -- 1
-primPdep64 :: Word64 -> Word64 -> Word64
+primPdep64
+  :: Word64 -- ^ word containing the bits that will be deposited
+  -> Word64 -- ^ bitmap selecting the bits that are to be deposited
+  -> Word64 -- ^ word containing the deposited bits
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
 primPdep64 (W64# src#) (W64# mask#) = W64# (pdep64# src# mask#)
 #else
@@ -62,7 +68,10 @@ primPdep64 = slowPdep
 --
 -- >>> primPdep32 1 1
 -- 1
-primPdep32 :: Word32 -> Word32 -> Word32
+primPdep32
+  :: Word32 -- ^ word containing the bits that will be deposited
+  -> Word32 -- ^ bitmap selecting the bits that are to be deposited
+  -> Word32 -- ^ word containing the deposited bits
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
 primPdep32 (W32# src#) (W32# mask#) = W32# (pdep32# src# mask#)
 #else
@@ -78,7 +87,10 @@ primPdep32 = slowPdep
 --
 -- >>> primPdep16 1 1
 -- 1
-primPdep16 :: Word16 -> Word16 -> Word16
+primPdep16
+  :: Word16 -- ^ word containing the bits that will be deposited
+  -> Word16 -- ^ bitmap selecting the bits that are to be deposited
+  -> Word16 -- ^ word containing the deposited bits
 primPdep16 src mask = fromIntegral (primPdep32 (fromIntegral src) (fromIntegral mask))
 {-# INLINE primPdep16 #-}
 
@@ -90,7 +102,10 @@ primPdep16 src mask = fromIntegral (primPdep32 (fromIntegral src) (fromIntegral 
 --
 -- >>> primPdep8 1 1
 -- 1
-primPdep8 :: Word8 -> Word8 -> Word8
+primPdep8
+  :: Word8 -- ^ word containing the bits that will be deposited
+  -> Word8 -- ^ bitmap selecting the bits that are to be deposited
+  -> Word8 -- ^ word containing the deposited bits
 primPdep8 src mask = fromIntegral (primPdep32 (fromIntegral src) (fromIntegral mask))
 {-# INLINE primPdep8 #-}
 

@@ -27,3 +27,4 @@ cabal.project.local
 /snapshot.yaml
 /stack-ci.yaml
 /.ghc.environment.*
+/*.tar.gz
