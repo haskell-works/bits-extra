@@ -1,7 +1,7 @@
 cabal-version: 2.2
 
 name:                   bits-extra
-version:                0.0.1.4
+version:                0.0.1.5
 synopsis:               Useful bitwise operations
 description:            Please see the README on Github at <https://github.com/haskell-works/bits-extra#readme>
 category:               Data, Bit
