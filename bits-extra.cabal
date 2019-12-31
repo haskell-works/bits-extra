@@ -74,12 +74,10 @@ test-suite bits-extra-test
   main-is:              Spec.hs
   hs-source-dirs:       test
   ghc-options:          -threaded -rtsopts -with-rtsopts=-N
-  autogen-modules:      Paths_bits_extra
   build-depends:        bits-extra
   build-tool-depends:   hspec-discover:hspec-discover
   other-modules:        Data.Bits.PdepSpec
                         Data.Bits.PextSpec
-                        Paths_bits_extra
 
 benchmark bench
   import:               base, config
@@ -88,8 +86,6 @@ benchmark bench
                       , vector
   type:                 exitcode-stdio-1.0
   main-is:              Main.hs
-  other-modules:        Paths_bits_extra
-  autogen-modules:      Paths_bits_extra
   hs-source-dirs:       bench
   ghc-options:          -O2
   build-depends:        bits-extra
