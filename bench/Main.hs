@@ -9,6 +9,8 @@ import Data.Word
 
 import qualified Data.Vector.Storable as DVS
 
+{- HLINT ignore "Monoid law, left identity" -}
+
 mkVector :: (Num w, DVS.Storable w) => w -> IO (DVS.Vector w)
 mkVector w = return $ DVS.unfoldrN 1024 gen w
   where gen b = let a = b + 1 in Just (a, a)

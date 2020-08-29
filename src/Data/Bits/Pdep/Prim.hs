@@ -1,5 +1,4 @@
 {-# LANGUAGE CPP       #-}
-{-# LANGUAGE MagicHash #-}
 
 {-|
 Module      : Data.Bits.Pdep.Prim
