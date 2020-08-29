@@ -33,7 +33,7 @@ slowPdep64' result src mask = if lowest /= 0
   then slowPdep64' newResult (src `shiftR` 1) (mask .&. complement lowest)
   else result
   where lowest    = (-mask) .&. mask
-        newResult = (result .|. ((lsb src) .&. lowest))
+        newResult = result .|. (lsb src .&. lowest)
 
 -- | Bitwise parallel deposit (emulated).  Deposits bits from the source at the
 -- locations described by the mask.

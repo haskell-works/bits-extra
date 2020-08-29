@@ -1,5 +1,4 @@
-{-# LANGUAGE CPP       #-}
-{-# LANGUAGE MagicHash #-}
+{-# LANGUAGE CPP #-}
 
 {-|
 Module      : Data.Bits.Pext.Prim
