@@ -1,69 +1,164 @@
-name: Haskell CI
+name: Binaries
 
-on: [push]
+defaults:
+  run:
+    shell: bash
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ghc: ["8.10.4", "8.8.4", "8.6.5"]
+        os: [ubuntu-latest]
 
     steps:
-    - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
-    - name: Install Haskell build environment
-      run: |
-        sudo apt-get update
-        sudo apt-get -y install software-properties-common
-        sudo add-apt-repository ppa:hvr/ghc
+      - name: Select optimal cabal version
+        run: |
+          case "$OS" in
+            Windows_NT)   echo "CABAL_VERSION=3.4.0.0-rc5"  >> $GITHUB_ENV;;
+            *)            echo "CABAL_VERSION=3.4.0.0"      >> $GITHUB_ENV;;
+          esac
 
-        sudo apt-get -y install locales curl sudo git
-        sudo apt-get -y install g++ libstdc++6
-        sudo apt-get -y install libsnappy1v5 libtinfo-dev libsnappy-dev jq
-        sudo apt-get -y install zlib1g zlib1g-dev
-        sudo apt-get -y install libz3-dev
-        sudo apt-get -y install libpq5 libpq-dev
-        sudo apt-get -y install alex-3.1.7 cabal-install-3.0 happy-1.19.5
-        sudo apt-get -y install hpack hspec-discover libyaml-0-2
-        sudo apt-get -y install ghc-8.8.1
-        sudo apt-get -y install zip
-        sudo apt-get -y install wget
+      - uses: haskell/actions/setup@v1
+        id: setup-haskell
+        with:
+          ghc-version: ${{ matrix.ghc }}
+          cabal-version: ${{ env.CABAL_VERSION }}
 
-        sudo apt-get -y remove --purge software-properties-common
-        sudo apt-get -y autoremove
+      - name: Set some window specific things
+        if: matrix.os == 'windows-latest'
+        run: echo 'EXE_EXT=.exe' >> $GITHUB_ENV
 
-        sudo ln -s /opt/cabal/bin/cabal /usr/local/bin/cabal
-        sudo ln -s /opt/ghc/bin/ghc /usr/local/bin/ghc
-        sudo ln -s /opt/ghc/bin/ghc-pkg /usr/local/bin/ghc-pkg
-        cabal --version
-        ghc --version
+      - name: Configure project
+        run: cabal configure --enable-tests --enable-benchmarks --write-ghc-environment-files=ghc8.4.4+
 
-    - name: Install cabal-cache tool
-      run: |
-        CACHE_TOOL_TAG=$(curl -s -X GET https://api.github.com/repos/haskell-works/cabal-cache/releases/latest | jq -rc .tag_name)
-        echo "Downloading: https://github.com/haskell-works/cabal-cache/releases/download/${CACHE_TOOL_TAG}/cabal-cache_x86_64_linux.tar.gz"
-        curl -Ls https://github.com/haskell-works/cabal-cache/releases/download/${CACHE_TOOL_TAG}/cabal-cache_x86_64_linux.tar.gz | tar -xvz -C /tmp/
-        sudo cp /tmp/cabal-cache /usr/local/bin/cabal-cache
-        cabal-cache version
+      - uses: action-works/cabal-cache@v1
+        name: Cache cabal store
+        with:
+          key-prefix: CwBTpnRd
 
-    - name: Check cabal file
-      run: cabal check
+      - name: Build
+        # Try building it twice in case of flakey builds on Windows
+        run: |
+          cabal build all --enable-tests --enable-benchmarks --write-ghc-environment-files=ghc8.4.4+ || \
+          cabal build all --enable-tests --enable-benchmarks --write-ghc-environment-files=ghc8.4.4+ -j1
 
-    - name: Cabal update
-      run: cabal v2-update
+      - name: Test
+        run: |
+          cabal test all --enable-tests --enable-benchmarks --write-ghc-environment-files=ghc8.4.4+
 
-    - name: Cabal Configure
-      run: cabal v2-configure
+  check:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
 
-    - name: Restore cabal cache
-      run: |
-        cabal-cache sync-from-archive \
-          --threads       8                                                                             \
-          --archive-uri   http://hw-binary-cache-us-west-2-a.s3-website-us-west-2.amazonaws.com/archive
+    steps:
+      - uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: cabal v2-build --enable-tests --enable-benchmarks --write-ghc-environment-files=always --only-dependencies
+      - name: Check if cabal project is sane
+        run: |
+          PROJECT_DIR=$PWD
+          mkdir -p $PROJECT_DIR/build/sdist
+          for i in $(git ls-files | grep '\.cabal'); do
+            cd $PROJECT_DIR && cd `dirname $i`
+            cabal check
+          done
 
-    - name: Build
-      run: cabal v2-build --enable-tests --enable-benchmarks --write-ghc-environment-files=always
+      - name: Tag new version
+        id: tag
+        if: ${{ github.ref == 'refs/heads/main' }}
+        env:
+          server: http://hackage.haskell.org
+          username: ${{ secrets.HACKAGE_USER }}
+          password: ${{ secrets.HACKAGE_PASS }}
+        run: |
+          package_version="$(cat *.cabal | grep '^version:' | cut -d : -f 2 | xargs)"
 
-    - name: Run tests
-      run: cabal v2-test --enable-tests --enable-benchmarks --write-ghc-environment-files=always
+          echo "Package version is v$package_version"
+
+          git fetch --unshallow origin
+
+          if git tag "v$package_version"; then
+            echo "Tagging with new version "v$package_version""
+
+            if git push origin "v$package_version"; then
+              echo "Tagged with new version "v$package_version""
+
+              echo "::set-output name=tag::v$package_version"
+            fi
+          fi
+
+  release:
+    needs: [build, check]
+    runs-on: ubuntu-latest
+    if: ${{ needs.check.outputs.tag != '' }}
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create source distribution
+        run: |
+          PROJECT_DIR=$PWD
+          mkdir -p $PROJECT_DIR/build/sdist
+          for i in $(git ls-files | grep '\.cabal'); do
+            cd $PROJECT_DIR && cd `dirname $i`
+            cabal v2-sdist -o $PROJECT_DIR/build/sdist
+          done;
+
+      - name: Publish to hackage
+        env:
+          server: http://hackage.haskell.org
+          username: ${{ secrets.HACKAGE_USER }}
+          password: ${{ secrets.HACKAGE_PASS }}
+          candidate: false
+        run: |
+          package_version="$(cat *.cabal | grep '^version:' | cut -d : -f 2 | xargs)"
+
+          for PACKAGE_TARBALL in $(find ./build/sdist/ -name "*.tar.gz"); do
+            PACKAGE_NAME=$(basename ${PACKAGE_TARBALL%.*.*})
+
+            if ${{ env.candidate }}; then
+              TARGET_URL="${{ env.server }}/packages/candidates";
+              DOCS_URL="${{ env.server }}/package/$PACKAGE_NAME/candidate/docs"
+            else
+              TARGET_URL="${{ env.server }}/packages/upload";
+              DOCS_URL="${{ env.server }}/package/$PACKAGE_NAME/docs"
+            fi
+
+            HACKAGE_STATUS=$(curl --silent --head -w %{http_code} -XGET --anyauth --user "${{ env.username }}:${{ env.password }}" ${{ env.server }}/package/$PACKAGE_NAME -o /dev/null)
+
+            if [ "$HACKAGE_STATUS" = "404" ]; then
+              echo "Uploading $PACKAGE_NAME to $TARGET_URL"
+
+              curl -X POST -f --user "${{ env.username }}:${{ env.password }}" $TARGET_URL -F "package=@$PACKAGE_TARBALL"
+              echo "Uploaded $PACKAGE_NAME"
+            else
+              echo "Package $PACKAGE_NAME" already exists on Hackage.
+            fi
+          done
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: Undocumented
+          draft: true
+          prerelease: false
