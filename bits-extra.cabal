@@ -9,10 +9,10 @@ homepage:               https://github.com/haskell-works/bits-extra#readme
 bug-reports:            https://github.com/haskell-works/bits-extra/issues
 author:                 John Ky
 maintainer:             newhoggy@gmail.com
-copyright:              2018-2020 John Ky
+copyright:              2018-2021 John Ky
 license:                BSD-3-Clause
 license-file:           LICENSE
-tested-with:            GHC == 9.0.1, GHC == 8.10.4, GHC == 8.8.4, GHC == 8.6.5
+tested-with:            GHC == 9.0.1, GHC == 8.10.7, GHC == 8.8.4, GHC == 8.6.5
 build-type:             Simple
 extra-source-files:     ChangeLog.md
                         README.md
@@ -33,7 +33,7 @@ common doctest                    { build-depends: doctest                    >=
 common doctest-discover           { build-depends: doctest-discover           >= 0.2        && < 0.3    }
 common ghc-prim                   { build-depends: ghc-prim                   >= 0.5        && < 0.8    }
 common hedgehog                   { build-depends: hedgehog                   >= 0.5.3      && < 1.1    }
-common hspec                      { build-depends: hspec                      >= 2.4        && < 2.8    }
+common hspec                      { build-depends: hspec                      >= 2.4        && < 2.9    }
 common hw-hedgehog                { build-depends: hw-hedgehog                >= 0.1        && < 0.2    }
 common hw-hspec-hedgehog          { build-depends: hw-hspec-hedgehog          >= 0.1        && < 0.2    }
 common vector                     { build-depends: vector                     >= 0.12       && < 0.13   }
