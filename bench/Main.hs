@@ -1,11 +1,16 @@
+{-# LANGUAGE CPP #-}
+
 module Main where
 
 import Criterion.Main
 import Data.Bits.Pdep
 import Data.Bits.Pdep.Slow
 import Data.Bits.Pext
-import Data.Monoid         ((<>))
 import Data.Word
+
+#if !MIN_VERSION_base(4,13,0)
+import Data.Monoid         ((<>))
+#endif
 
 import qualified Data.Vector.Storable as DVS
 
