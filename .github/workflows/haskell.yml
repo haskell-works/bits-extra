@@ -34,7 +34,14 @@ jobs:
         run: echo 'EXE_EXT=.exe' >> $GITHUB_ENV
 
       - name: Configure project
-        run: cabal configure --enable-tests --enable-benchmarks --write-ghc-environment-files=ghc8.4.4+
+        run: |
+          case ${{ matrix.os }} in
+            ubuntu-*)   BMI_FLAG="-f bmi2"  ;;
+            windows-*)  BMI_FLAG=""         ;;
+            macOS-*)    BMI_FLAG=""         ;;
+          esac
+          echo "BMI_FLAG=$BMI_FLAG"
+          cabal configure --enable-tests --enable-benchmarks --write-ghc-environment-files=ghc8.4.4+ $BMI_FLAG
 
       - name: Cabal cache over S3
         uses: action-works/cabal-cache-s3@v1

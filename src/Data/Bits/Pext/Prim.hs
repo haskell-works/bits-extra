@@ -1,4 +1,6 @@
-{-# LANGUAGE CPP       #-}
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE CPP          #-}
+{-# LANGUAGE MagicHash    #-}
 
 {-|
 Module      : Data.Bits.Pext.Prim
@@ -62,7 +64,10 @@ primPext32
   -> Word32 -- ^ bitmap selecting the bits that are to be extracted
   -> Word32 -- ^ word containing the extracted bits
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
-primPext32 (W32# src#) (W32# mask#) = W32# (pext32# src# mask#)
+primPext32 src mask =
+  let !(W# src#)   = fromIntegral src  in
+  let !(W# mask#)  = fromIntegral mask in
+  fromIntegral (W# (pext32# src# mask#))
 #else
 primPext32 = slowPext
 #endif
