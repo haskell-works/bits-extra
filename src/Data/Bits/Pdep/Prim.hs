@@ -1,4 +1,6 @@
-{-# LANGUAGE CPP       #-}
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE CPP          #-}
+{-# LANGUAGE MagicHash    #-}
 
 {-|
 Module      : Data.Bits.Pdep.Prim
@@ -17,10 +19,10 @@ module Data.Bits.Pdep.Prim
   , fastPdepEnabled
   ) where
 
+import GHC.Prim
 import GHC.Word
 
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
-import GHC.Prim
 #else
 import Data.Bits.Pdep.Slow
 #endif
@@ -72,7 +74,10 @@ primPdep32
   -> Word32 -- ^ bitmap selecting the bits that are to be deposited
   -> Word32 -- ^ word containing the deposited bits
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
-primPdep32 (W32# src#) (W32# mask#) = W32# (pdep32# src# mask#)
+primPdep32 src mask =
+  let !(W# src#)   = fromIntegral src  in
+  let !(W# mask#)  = fromIntegral mask in
+  fromIntegral (W# (pdep32# src# mask#))
 #else
 primPdep32 = slowPdep
 #endif
