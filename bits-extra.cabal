@@ -9,7 +9,7 @@ homepage:               https://github.com/haskell-works/bits-extra#readme
 bug-reports:            https://github.com/haskell-works/bits-extra/issues
 author:                 John Ky
 maintainer:             newhoggy@gmail.com
-copyright:              2018-2021 John Ky
+copyright:              2018-2025 John Ky
 license:                BSD-3-Clause
 license-file:           LICENSE
 tested-with:            GHC == 9.12.1, GHC == 9.10.1, GHC == 9.8.4, GHC == 9.6.6, GHC == 9.4.8, GHC == 9.2.8, GHC == 9.0.2, GHC == 8.10.7
