@@ -19,10 +19,8 @@ module Data.Bits.Pext.Prim
   , fastPextEnabled
   ) where
 
-import GHC.Word
-
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
-import GHC.Prim
+import GHC.Exts
 #else
 import Data.Bits.Pext.Slow
 #endif

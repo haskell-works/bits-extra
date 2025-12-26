@@ -19,8 +19,7 @@ module Data.Bits.Pdep.Prim
   , fastPdepEnabled
   ) where
 
-import GHC.Prim
-import GHC.Word
+import GHC.Exts
 
 #if MIN_VERSION_base(4,11,0) && defined(BMI2_ENABLED)
 #else
